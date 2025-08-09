@@ -1,0 +1,162 @@
+ 1. Classify each ticket by urgency based on priority
+• Priority 3 → ‘High’
+• Priority 2 → ‘Medium’
+• Priority 1 → ‘Low’
+select * ,
+    -> case priority
+    -> when priority<=2 then
+    -> case
+    -> when priority=1 then 'Low'
+    -> else 'Medium'
+    -> end
+    -> else 'High'
+    -> end as updated_table
+    -> from tickets;
+
+ 2. Add a column to classify ticket status
+• ‘Active’ if status = ‘Open’ or ‘Escalated’
+• ‘Inactive’ if status = ‘Closed’
+• ‘Waiting’ otherwise
+SELECT *,
+CASE 
+WHEN status IN ('Open', 'Escalated') THEN 'Active'
+WHEN status = 'Closed' THEN 'Inactive'
+ELSE 'Otherwise'
+END AS new_status
+FROM tickets;
+
+3. List tickets and show issue category
+• ‘Software Issue’, ‘Hardware Issue’, ‘Network Issue’, or ‘Other’
+select * ,
+    -> case issue_type
+    -> when 'software' then 'Software Issue'
+    -> when 'hardware' then 'Hardware Issue'
+    -> when 'network' then 'Network Issue'
+    -> else 'Other'
+    -> end as new_issue_type
+    -> from tickets;
+
+4. Mark tickets as ‘VIP’; if customer name starts with A, E, M, or S
+select * ,
+    -> case
+    -> when customer_name like 'A%' then 'VIP'
+    -> when customer_name like 'E%' then 'VIP'
+    -> when customer_name like 'M%' then 'VIP'
+    -> when customer_name like 'S%' then 'VIP'
+    -> end as updated_name
+    -> from tickets ;
+5. Show ticket summary: ‘High Priority Open’, ‘Low Priority Closed’, or ‘Other’;
+select ticket_id,customer_name,priority,status,
+    -> case
+    -> when status ='open' and priority=3 then 'High priority open'
+    -> when status ='closed' and priority=1 then 'Low priority closed'
+    -> else 'Other'
+    -> end as updated_list
+    -> from tickets;
+ 6. Mark follow-up required if ticket is pending or priority is high.
+select ticket_id,customer_name,priority,status,
+    -> case
+    -> when status ='pending' or priority=3 then 'follow up required'
+    -> end as follow_up
+    -> from tickets;
+ 7. Assign handling group based on issue_type
+select ticket_id,customer_name,issue_type,
+    -> case
+    -> when issue_type='network' then 'Network support'
+    -> when issue_type='hardware' then 'Hardware support'
+    -> when issue_type='software' then 'Softwareware support'
+    -> end as issue_handling
+    -> from tickets;
+ 8. Label cities as ‘HQ’ if in New York or Chicago
+select ticket_id,customer_name,location,
+    -> case
+    -> when location='New york' or location='Chicago' then 'HQ'
+    -> end as updated_city
+    -> from tickets;
+
+9. Sort tickets so ‘Escalated’ come first, then ‘Open’, then others
+
+10. Update status to ‘Urgent’ if priority = 3 and status is ‘Open’
+
+ 11. Show how many tickets fall into each priority label
+SELECT priority, COUNT(*) AS ticket_count
+    -> FROM tickets
+    -> GROUP BY priority
+    -> ORDER BY priority;
+
+12. Show a response plan:
+• Immediate (High + Open)
+• Scheduled (Medium + Pending)
+• Escalate (Low + Escalated)
+• Standard otherwise
+select ticket_id,customer_name,priority,status,
+    -> case
+    -> when status='open' and priority=3 then 'Immediate'
+    -> when status='pending' and priority=2 then 'Scheduled'
+    -> when status='escalated' and priority=1 then 'Escalate'
+    -> else 'Others'
+    -> end as updated_list
+    -> from tickets;
+13. Show ticket age category
+• If created_date is today → ‘New’
+• If more than 7 days ago → ‘Old’
+• Else → ‘Recent’
+select ticket_id,customer_name,created_date,
+    -> case
+    -> when created_date=current_date then 'New'
+    -> when created_date<current_date then 'Old'
+    -> else 'Recent'
+    -> end as updated_list
+    -> from tickets;
+ 14. Count tickets by assigned team type: Software, Hardware, Network
+15. Create a column with nested CASE:
+• If Open:
+o High → ‘Critical Open’
+o Medium → ‘Important Open’
+o Else → ‘Minor Open’
+• Else: ‘Not Open’	
+select ticket_id,customer_name,priority,status,
+    -> case
+    -> when status='open' then
+    -> case
+    -> when priority=3 then 'Critical Open'
+    -> when priority=2 then 'important Open'
+    -> else 'Minor Open'
+    -> end
+    -> else 'Not Open'
+    -> end as updated_list
+    -> from tickets;
+16. Count number of Open vs. Closed vs. Other tickets
+17. List all tickets and show ‘Assigned Team Type’
+• If team contains ‘Software’ → ‘SW’
+• If team contains ‘Hardware’ → ‘HW’
+• If team contains ‘Network’ → ‘NW’
+select ticket_id,customer_name,issue_type,
+    -> case
+    -> when issue_type='Software' then 'SW'
+    -> when issue_type='hardware' then 'HW'
+    -> when issue_type='Network' then 'NW'
+    -> end as updated_list
+    -> from tickets;
+ 18. Get average priority per issue type
+select issue_type,avg(priority) as avg_priority from tickets group by issue_type;
+ 19. Show only ‘Software’ tickets with extra labels: ‘High Risk’, ‘Normal’, etc.
+select ticket_id,customer_name,issue_type,priority,
+    -> case
+    -> when priority>=2 then 'High Risk'
+    -> else 'Normal'
+    -> end as risk_label
+    -> from tickets;
+
+20. Display ticket_id, issue_type, and a comment:
+• ‘Needs Attention’ if Escalated or Pending
+• ‘Resolved’ if Closed
+• ‘In Progress’ otherwise
+select ticket_id,issue_type,
+    -> case
+    -> when status='escalated' and status='pending' then 'Need attention'
+    -> when status='closed' then 'Resolved'
+    -> else 'In Progress'
+    -> end as comment
+    -> from tickets;
+
