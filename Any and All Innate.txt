@@ -1,0 +1,84 @@
+Section 1: Using ANY
+
+1. Get employees whose salary is greater than ANY employee in the HR department.
+
+Ans:  select name from emp where salary > any(select salary from emp where department='hr');
+
+2. Get employees whose salary is less than ANY employee in the IT department.
+
+Ans:  select name from emp where salary < any(select salary from emp where department='it');
+
+3. Find employees whose salary is equal to ANY salary in the Finance department.
+
+Ans:select name from emp where salary = any(select salary from emp where department='finance');
+
+4. Find employees whose salary is greater than ANY salary in the Sales department.
+
+Ans:select name from emp where salary > any(select salary from emp where department='sales');
+
+5. Find employees whose salary is less than ANY employee in the Finance department.
+
+Ans:select name from emp where salary < any(select salary from emp where department='finance');
+
+6. Find employees whose salary is not equal to ANY salary in the HR department.
+(Hint: Use != ALL instead of != ANY for correct logic.)
+
+Ans: select name from emp where salary <> all(select salary from emp where department='hr');
+
+7. Select employees from IT who earn more than ANY HR employee.
+
+Ans: SELECT * from emp where department ='it' and  salary > any(select salary from emp where department='hr');
+
+8. Select employees from Sales who earn less than ANY IT employee.
+
+Ans: SELECT * from emp where department ='sales' and  salary < any(select salary from emp where department='it');
+
+9. List employees whose salary is higher than ANY employee in a different department.
+
+Ans: SELECT e1.name FROM emp e1 WHERE e1.salary > ANY (SELECT e2.salary FROM emp e2 WHERE e2.department <> e1.department);
+
+10. Find employees whose salary is greater than ANY employee named 'Grace'.
+
+Ans: select name from emp where salary > any(select salary from emp where name='grace');
+
+Section 2: Using ALL
+
+11. Get employees whose salary is greater than ALL employees in the HR department.
+
+Ans:select name from emp where salary > all(select salary from emp where department='hr');
+
+12. Find employees whose salary is less than ALL employees in the IT department.
+
+Ans: select name from emp where salary < all(select salary from emp where department='it');
+
+13. Find employees whose salary is equal to ALL employees in the Sales department.
+
+Ans:  select name from emp where salary = all(select salary from emp where department='sales');
+
+14. List employees who earn more than ALL employees in the Finance department.
+
+Ans: select name from emp where salary > all(select salary from emp where department='finance');
+
+15. Get employees whose salary is less than ALL employees in the Sales department.
+
+Ans: select name from emp where salary < all(select salary from emp where department='sales');
+
+16. Find employees whose salary is not equal to ALL employees in the HR department.
+
+Ans: select name from emp where salary <> all(select salary from emp where department='hr');
+
+17. Find employees from HR who earn more than ALL employees in Sales.
+
+Ans: select name from emp where department = 'hr' and salary > all(select salary from emp where department='sales');
+
+18. Find employees from Finance who earn less than ALL employees in IT.
+
+Ans: select name from emp where department = 'finance' and salary < all(select salary from emp where department='it');
+
+19. Select employees whose salary is higher than ALL employees whose salary is under 60000.
+
+Ans:  select name from emp where salary > all(select salary from emp where salary< 60000);
+
+20. List employees whose salary is less than ALL employees earning above 60000.
+
+Ans: select name from emp where salary < all(select salary from emp where salary> 60000); 
